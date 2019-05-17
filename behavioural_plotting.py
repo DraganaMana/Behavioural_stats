@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 
 """
 ------- Distribution plots per single subject, per interval
-"""
+
 os.chdir("C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/ScaledTime2/")
 x=[]
 cur_int='5.8'
@@ -34,19 +34,21 @@ plt.ylabel("Density", fontsize=12)
 plt.xlabel("Produced intervals", fontsize=12) 
 #plt.plot([2.9,2.9],[0,0.831], label='2.9 seconds', color='darkblue')
 sns.distplot(x, rug=True, hist=False, label='Density', color='teal')
+"""
 
 
 """
 ------- Distribution plots per single subject of all intervals
-"""
-os.chdir("D:/Matlab data/ScaledTime1002")
+
+os.chdir("D:/ScaledTime/Matlab data/ScaledTime3")
 #os.chdir("C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/ScaledTime1_Sebastien/")
 x1=[]
 x2=[]
 x3=[]
-for i in range(1,7): # 1, 2, 3, 4, 5, 6
+cur_subj='3'
+for i in range(1,6): # 1, 2, 3, 4, 5
     for j in ['1.45','2.9','5.8']:
-        name = 'ScaledTime_Play_subj_1002_bl_' + str(i) + '_int_' + j + '.txt'
+        name = 'ScaledTime_Play_subj_'+cur_subj+'_bl_' + str(i) + '_int_' + j + '.txt'
         int_length=np.genfromtxt(name, dtype='str')
         for k in range(1,16):
             int_single = int_length[k,17]
@@ -72,23 +74,25 @@ x3_mean = sum(x3)/len(x3)
 x3_sd = truncate(np.std(x3),3)
 
 with sns.color_palette("Blues_r"):
-    plt.title("All interval productions of pax fm180074 of all blocks")
+    plt.title("All interval productions of pax at140305 of all blocks")
     plt.ylabel("Density", fontsize=12) 
     plt.xlabel("Produced intervals", fontsize=12)         
     sns.distplot(x1, rug=True, hist=False, label='1.45 seconds, SD='+str(x1_sd))
     sns.distplot(x2, rug=True, hist=False, label='2.9 seconds, SD='+str(x2_sd))
     sns.distplot(x3, rug=True, hist=False, label='5.8 seconds, SD='+str(x3_sd))
+"""
 
 """
-------- Distribution plots - all subjects averaged, all intervals
+------- Distribution plots - all subjects, all intervals
 """
 x1=[]
 x2=[]
 x3=[]
+pax = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 for i in range(1,7): # 1, 2, 3, 4, 5, 6
-    for k in ['1002', '2001']:
+    for k in pax:
 #        data_path = 'C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/'
-        data_path = 'D:/Matlab data/'
+        data_path = 'D:/ScaledTime/Matlab data/'
         data_path_subj = os.path.join(data_path, 'ScaledTime'+k)
         os.chdir(data_path_subj)
         for j in ['1.45','2.9','5.8']:
@@ -98,15 +102,66 @@ for i in range(1,7): # 1, 2, 3, 4, 5, 6
                 for n in range(1,16):
                     int_single = int_length[n,17]
                     int_single = float(int_single)
-                    if int_single < 9:
-                        if j == '1.45':
-                            x1.append(int_single)
-                        if j == '2.9':
-                            x2.append(int_single)
-                        if j == '5.8':
-                            x3.append(int_single)
-                    else:
-                        pass
+                    if j == '1.45':
+                        x1.append(int_single)
+                    if j == '2.9':
+                        x2.append(int_single)
+                    if j == '5.8':
+                        x3.append(int_single)
+                    
+# A function to truncate the number of decimal places
+def truncate(n, decimals=0):
+    multiplier = 10 ** decimals
+    return int(n * multiplier) / multiplier     
+               
+# Calculate the means and the standard deviations 
+x1_arr = np.array(x1)
+x2_arr = np.array(x2)
+x3_arr = np.array(x3)
+#
+x1_mean = np.mean(x1_arr, axis=0)
+x2_mean = np.mean(x2_arr, axis=0)
+x3_mean = np.mean(x3_arr, axis=0)
+#
+x1_sd = truncate(np.std(x1_arr, axis=0), 3)
+x2_sd = truncate(np.std(x2_arr, axis=0), 3)
+x3_sd = truncate(np.std(x3_arr, axis=0), 3)
+
+# Keeps all values between mean +/- 3sd
+# x1
+x1_final = [x for x in x1 if (x > x1_mean - 3*x1_sd)]
+x1_final = [x for x in x1_final if (x < x1_mean + 3*x1_sd)]
+# x2
+x2_final = [x for x in x2 if (x > x2_mean - 3*x2_sd)]
+x2_final = [x for x in x2_final if (x < x2_mean + 3*x2_sd)]
+# x3
+x3_final = [x for x in x3 if (x > x3_mean - 3*x3_sd)]
+x3_final = [x for x in x3_final if (x < x3_mean + 3*x3_sd)]
+
+# Calculate the SDs and Means of the data without the outliers
+x1_fin_arr = np.array(x1_final)
+x2_fin_arr = np.array(x2_final)
+x3_fin_arr = np.array(x3_final)
+#
+x1_fin_mean = np.mean(x1_fin_arr, axis=0)
+x2_fin_mean = np.mean(x2_fin_arr, axis=0)
+x3_fin_mean = np.mean(x3_fin_arr, axis=0)
+#
+x1_fin_sd = truncate(np.std(x1_fin_arr, axis=0), 3)
+x2_fin_sd = truncate(np.std(x2_fin_arr, axis=0), 3)
+x3_fin_sd = truncate(np.std(x3_fin_arr, axis=0), 3)
+
+# Plot
+with sns.color_palette("Blues_r"):
+    plt.title("All interval productions of all participants of all blocks (SD is w/o outliers)")
+    plt.ylabel("Density", fontsize=12) 
+    plt.xlabel("Produced intervals", fontsize=12)         
+    sns.distplot(x1_final, rug=True, hist=False, label = '1.45 seconds, ' + str(len(x1_final)) + ' intervals, SD=' + str(x1_fin_sd))
+    sns.distplot(x2_final, rug=True, hist=False, label = '2.9 seconds, ' + str(len(x2_final)) + ' intervals, SD=' + str(x2_fin_sd))
+    sns.distplot(x3_final, rug=True, hist=False, label = '5.8 seconds, ' + str(len(x3_final)) + ' intervals, SD=' + str(x3_fin_sd))
+
+                 
+"""
 
 # A function to truncate the number of decimal places
 def truncate(n, decimals=0):
@@ -120,19 +175,33 @@ x2_sd = truncate(np.std(x2),3)
 x3_mean = sum(x3)/len(x3)
 x3_sd = truncate(np.std(x3),3)
 
-with sns.color_palette("Blues_r"):
-    plt.title("All interval productions of all subjects of all blocks")
-    plt.ylabel("Density", fontsize=12) 
-    plt.xlabel("Produced intervals", fontsize=12)         
-    sns.distplot(x1, rug=True, hist=False, label='1.45 seconds, SD='+str(x1_sd))
-    sns.distplot(x2, rug=True, hist=False, label='2.9 seconds, SD='+str(x2_sd))
-    sns.distplot(x3, rug=True, hist=False, label='5.8 seconds, SD='+str(x3_sd))
+
+x1_remove = []
+x2_remove = []
+x3_remove = []
+for (i, j, k) in zip(range(len(x1)), range(len(x2)), range(len(x3))):
+    if (x1[i] < (x1_mean-3*x1_sd)) or (x1[i] > (x1_mean+(3*x1_sd))):
+        x1_remove.append(i)
+#        x1.pop(i)
+    if (x2[i] < (x2_mean-3*x2_sd)) or (x2[i] > (x2_mean+(3*x2_sd))):
+        x2_remove.append(j)
+#        x2.pop(j)
+    if (x3[i] < (x3_mean-3*x3_sd)) or (x3[i] > (x3_mean+(3*x3_sd))):
+        x3_remove.append(k)
+#        x3.pop(k)
+        
+for (i, j, k) in zip(range(len(x1_remove)), range(len(x2_remove)), range(len(x3_remove))):
+    x1.pop(x1_remove[i])
+    x2.pop(x1_remove[j])
+    x3.pop(x1_remove[k])
+
+""" 
 
 
 
 """
 ------- Distribution plots of all blocks per interval per single subject
-"""
+
 os.chdir("C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/ScaledTime8/")
 x1=[]
 x2=[]
@@ -170,10 +239,12 @@ sns.distplot(x3, rug=True, hist=False, color='y', label='Block 3')
 sns.distplot(x4, rug=True, hist=False, color='g', label='Block 4')
 sns.distplot(x5, rug=True, hist=False, color='blue', label='Block 5')
 sns.distplot(x6, rug=True, hist=False, color='violet', label='Block 6')
+"""
+
 
 """
 ------- Distribution plots of all blocks of all subjects per interval
-"""
+
 x1=[]
 x2=[]
 x3=[]
@@ -239,12 +310,12 @@ with sns.diverging_palette(145, 10, s=85, l=25, n=6):
     sns.distplot(x4, rug=True, hist=False, label='Block 4, SD='+str(x4_sd))
     sns.distplot(x5, rug=True, hist=False, label='Block 5, SD='+str(x5_sd))
     sns.distplot(x6, rug=True, hist=False, label='Block 6, SD='+str(x6_sd))
-
+"""
 
 
 """
 ------- Standardize the distribution plots per pax ??????
-"""
+
 os.chdir("C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/ScaledTime1_Sebastien/")
 
 
@@ -262,7 +333,7 @@ for i in range(1,7): # 1, 2, 3, 4, 5, 6
 
 scaler = StandardScaler().fit(x)
 sns.distplot(scaler, rug=True, hist=False)
-
+"""
 
 
 """
@@ -291,8 +362,10 @@ cv1_all_blocks=[]
 cv2_all_blocks=[]
 cv3_all_blocks=[]
 for i in range(1,7): # 1, 2, 3, 4, 5, 6
-    for k in ['1','2','1369','7','8']:
-        data_path = 'C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/'
+#    for k in ['1','2','1369','7','8']:
+    for k in ['1', '2', '1002', '2001']:
+        data_path = 'D:/ScaledTime/Matlab data/'
+#        data_path = 'C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/'
         data_path_subj = os.path.join(data_path, 'ScaledTime'+k)
         os.chdir(data_path_subj)
         for j in ['1.45','2.9','5.8']:
@@ -300,7 +373,7 @@ for i in range(1,7): # 1, 2, 3, 4, 5, 6
             if os.path.isfile(name) and os.path.exists(name):
                 int_length=np.genfromtxt(name, dtype='str')
                 for n in range(1,16):
-                    int_single = int_length[n,15]
+                    int_single = int_length[n,17]
                     int_single = float(int_single)
                     if int_single < 9:
                         if j == '1.45':
@@ -502,11 +575,11 @@ with sns.color_palette("GnBu_d"):
 x1=[]
 x2=[]
 x3=[]
-outliers_lim=9
+pax = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
 for i in range(1,7): # 1, 2, 3, 4, 5, 6
 #    for k in ['1', '7', '8', '1369']:
-    for k in ['1002', '2001']:
-        data_path = 'D:/Matlab data/'
+    for k in pax:
+        data_path = 'D:/scaledTime/Matlab data/'
         data_path_subj = os.path.join(data_path, 'ScaledTime'+k)
         os.chdir(data_path_subj)
         for j in ['1.45','2.9','5.8']:
@@ -516,27 +589,66 @@ for i in range(1,7): # 1, 2, 3, 4, 5, 6
                 for n in range(1,16):
                     int_single = int_length[n,17]
                     int_single = float(int_single)
-                    if int_single < outliers_lim:
-                        if j == '1.45':
-                            x1.append(int_single)
-                        if j == '2.9':
-                            x2.append(int_single)
-                        if j == '5.8':
-                            x3.append(int_single)
-                    else:
-                        pass
+                    if j == '1.45':
+                        x1.append(int_single)
+                    if j == '2.9':
+                        x2.append(int_single)
+                    if j == '5.8':
+                        x3.append(int_single)
 
+# A function to truncate the number of decimal places
+def truncate(n, decimals=0):
+    multiplier = 10 ** decimals
+    return int(n * multiplier) / multiplier     
+               
+# Calculate the means and the standard deviations 
+x1_arr = np.array(x1)
+x2_arr = np.array(x2)
+x3_arr = np.array(x3)
+#
+x1_mean = np.mean(x1_arr, axis=0)
+x2_mean = np.mean(x2_arr, axis=0)
+x3_mean = np.mean(x3_arr, axis=0)
+#
+x1_sd = truncate(np.std(x1_arr, axis=0), 3)
+x2_sd = truncate(np.std(x2_arr, axis=0), 3)
+x3_sd = truncate(np.std(x3_arr, axis=0), 3)
 
+# Keeps all values between mean +/- 3sd
+# x1
+x1_final = [x for x in x1 if (x > x1_mean - 3*x1_sd)]
+x1_final = [x for x in x1_final if (x < x1_mean + 3*x1_sd)]
+# x2
+x2_final = [x for x in x2 if (x > x2_mean - 3*x2_sd)]
+x2_final = [x for x in x2_final if (x < x2_mean + 3*x2_sd)]
+# x3
+x3_final = [x for x in x3 if (x > x3_mean - 3*x3_sd)]
+x3_final = [x for x in x3_final if (x < x3_mean + 3*x3_sd)]
+
+# Calculate the SDs and Means of the data without the outliers
+x1_fin_arr = np.array(x1_final)
+x2_fin_arr = np.array(x2_final)
+x3_fin_arr = np.array(x3_final)
+#
+x1_fin_mean = np.mean(x1_fin_arr, axis=0)
+x2_fin_mean = np.mean(x2_fin_arr, axis=0)
+x3_fin_mean = np.mean(x3_fin_arr, axis=0)
+#
+x1_fin_sd = truncate(np.std(x1_fin_arr, axis=0), 3)
+x2_fin_sd = truncate(np.std(x2_fin_arr, axis=0), 3)
+x3_fin_sd = truncate(np.std(x3_fin_arr, axis=0), 3)
+
+# Plot
 with sns.color_palette("GnBu_d"):
-    for i in x1:
+    for i in x1_final:
         plt.scatter(1.45,i, linewidths=1)
-    x1_mean = sum(x1)/len(x1)
-    for j in x2:
+    x1_mean = x1_fin_mean
+    for j in x2_final:
         plt.scatter(2.9,j, linewidths=1)
-    x2_mean = sum(x2)/len(x2)
-    for k in x3:
+    x2_mean = x2_fin_mean
+    for k in x3_final:
         plt.scatter(5.8,k, linewidths=1)
-    x3_mean = sum(x3)/len(x3)
+    x3_mean = x3_fin_mean
 
     x = np.array([ 1.45, 2.9, 5.8])
     my_xticks = ['1.45', '2.9', '5.8']
@@ -652,6 +764,87 @@ with sns.diverging_palette(145, 10, s=85, l=25, n=3):
 
 
 
+
+"""
+---- Normalized distributions
+"""
+
+x1=[]
+x2=[]
+x3=[]
+pax = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+for i in range(1,7): # 1, 2, 3, 4, 5, 6
+    for k in pax:
+#        data_path = 'C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/'
+        data_path = 'D:/ScaledTime/Matlab data/'
+        data_path_subj = os.path.join(data_path, 'ScaledTime'+k)
+        os.chdir(data_path_subj)
+        for j in ['1.45','2.9','5.8']:
+            name = 'ScaledTime_Play_subj_'+ k +'_bl_' + str(i) + '_int_' + j + '.txt'
+            if os.path.isfile(name) and os.path.exists(name):
+                int_length=np.genfromtxt(name, dtype='str')
+                for n in range(1,16):
+                    int_single = int_length[n,17]
+                    int_single = float(int_single)
+                    if j == '1.45':
+                        int_single = int_single/1.45
+                        x1.append(int_single)
+                    if j == '2.9':
+                        int_single = int_single/2.9
+                        x2.append(int_single)
+                    if j == '5.8':
+                        int_single = int_single/5.8
+                        x3.append(int_single)
+
+# A function to truncate the number of decimal places
+def truncate(n, decimals=0):
+    multiplier = 10 ** decimals
+    return int(n * multiplier) / multiplier     
+               
+# Calculate the means and the standard deviations 
+x1_arr = np.array(x1)
+x2_arr = np.array(x2)
+x3_arr = np.array(x3)
+#
+x1_mean = np.mean(x1_arr, axis=0)
+x2_mean = np.mean(x2_arr, axis=0)
+x3_mean = np.mean(x3_arr, axis=0)
+#
+x1_sd = truncate(np.std(x1_arr, axis=0), 3)
+x2_sd = truncate(np.std(x2_arr, axis=0), 3)
+x3_sd = truncate(np.std(x3_arr, axis=0), 3)
+
+# Keeps all values between mean +/- 3sd
+# x1
+x1_final = [x for x in x1 if (x > x1_mean - 3*x1_sd)]
+x1_final = [x for x in x1_final if (x < x1_mean + 3*x1_sd)]
+# x2
+x2_final = [x for x in x2 if (x > x2_mean - 3*x2_sd)]
+x2_final = [x for x in x2_final if (x < x2_mean + 3*x2_sd)]
+# x3
+x3_final = [x for x in x3 if (x > x3_mean - 3*x3_sd)]
+x3_final = [x for x in x3_final if (x < x3_mean + 3*x3_sd)]
+
+# Calculate the SDs and Means of the data without the outliers
+x1_fin_arr = np.array(x1_final)
+x2_fin_arr = np.array(x2_final)
+x3_fin_arr = np.array(x3_final)
+#
+x1_fin_mean = np.mean(x1_fin_arr, axis=0)
+x2_fin_mean = np.mean(x2_fin_arr, axis=0)
+x3_fin_mean = np.mean(x3_fin_arr, axis=0)
+#
+x1_fin_sd = truncate(np.std(x1_fin_arr, axis=0), 3)
+x2_fin_sd = truncate(np.std(x2_fin_arr, axis=0), 3)
+x3_fin_sd = truncate(np.std(x3_fin_arr, axis=0), 3)
+
+with sns.color_palette("Blues_r"):
+    plt.title("All interval productions of all subj of all blocks")
+    plt.ylabel("Density", fontsize=12) 
+    plt.xlabel("Normalized produced intervals", fontsize=12)         
+    sns.distplot(x1_final, hist=False, label='1.45 seconds, SD='+str(x1_fin_sd))
+    sns.distplot(x2_final, hist=False, label='2.9 seconds, SD='+str(x2_fin_sd))
+    sns.distplot(x3_final, hist=False, label='5.8 seconds, SD='+str(x3_fin_sd))
 
 
 
