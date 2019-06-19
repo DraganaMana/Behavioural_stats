@@ -15,10 +15,10 @@ import matplotlib.pyplot as plt
 """
 ------- Distribution plots per single subject, per interval
 
-os.chdir("C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/ScaledTime2/")
+os.chdir("C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/ScaledTime14/")
 x=[]
 cur_int='5.8'
-cur_subj='2'
+cur_subj='14'
 for i in range(1,4): # 1, 2, 3, 4, 5, 6
 #for j in ['1.45','2.9','5.8']:
     name = 'ScaledTime_Play_subj_'+cur_subj+'_bl_' + str(i) + '_int_' + cur_int + '.txt'
@@ -40,20 +40,20 @@ sns.distplot(x, rug=True, hist=False, label='Density', color='teal')
 """
 ------- Distribution plots per single subject of all intervals
 
-os.chdir("D:/ScaledTime/Matlab data/ScaledTime3")
+os.chdir("D:/ScaledTime/Matlab data/ScaledTime14")
 #os.chdir("C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/ScaledTime1_Sebastien/")
 x1=[]
 x2=[]
 x3=[]
-cur_subj='3'
-for i in range(1,6): # 1, 2, 3, 4, 5
+cur_subj='14'
+for i in range(1,5): # 1, 2, 3, 4
     for j in ['1.45','2.9','5.8']:
         name = 'ScaledTime_Play_subj_'+cur_subj+'_bl_' + str(i) + '_int_' + j + '.txt'
         int_length=np.genfromtxt(name, dtype='str')
         for k in range(1,16):
             int_single = int_length[k,17]
             int_single = float(int_single)
-            if int_single < 9:
+            if int_single < 30:
                 if j == '1.45':
                     x1.append(int_single)
                 if j == '2.9':
@@ -81,14 +81,15 @@ with sns.color_palette("Blues_r"):
     sns.distplot(x2, rug=True, hist=False, label='2.9 seconds, SD='+str(x2_sd))
     sns.distplot(x3, rug=True, hist=False, label='5.8 seconds, SD='+str(x3_sd))
 """
-
+#%%
 """
 ------- Distribution plots - all subjects, all intervals
 """
 x1=[]
 x2=[]
 x3=[]
-pax = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
+pax = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 
+       '11', '12', '13', '14', '15', '16', '17', '18']
 for i in range(1,7): # 1, 2, 3, 4, 5, 6
     for k in pax:
 #        data_path = 'C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/'
@@ -136,7 +137,7 @@ x2_final = [x for x in x2 if (x > x2_mean - 3*x2_sd)]
 x2_final = [x for x in x2_final if (x < x2_mean + 3*x2_sd)]
 # x3
 x3_final = [x for x in x3 if (x > x3_mean - 3*x3_sd)]
-x3_final = [x for x in x3_final if (x < x3_mean + 3*x3_sd)]
+x3_final = [x for x in x3_final if (x < x3_mean + 3*x3_sd)] # changed this to 2, it was too long
 
 # Calculate the SDs and Means of the data without the outliers
 x1_fin_arr = np.array(x1_final)
@@ -151,16 +152,78 @@ x1_fin_sd = truncate(np.std(x1_fin_arr, axis=0), 3)
 x2_fin_sd = truncate(np.std(x2_fin_arr, axis=0), 3)
 x3_fin_sd = truncate(np.std(x3_fin_arr, axis=0), 3)
 
-# Plot
-with sns.color_palette("Blues_r"):
-    plt.title("All interval productions of all participants of all blocks (SD is w/o outliers)")
-    plt.ylabel("Density", fontsize=12) 
-    plt.xlabel("Produced intervals", fontsize=12)         
-    sns.distplot(x1_final, rug=True, hist=False, label = '1.45 seconds, ' + str(len(x1_final)) + ' intervals, SD=' + str(x1_fin_sd))
-    sns.distplot(x2_final, rug=True, hist=False, label = '2.9 seconds, ' + str(len(x2_final)) + ' intervals, SD=' + str(x2_fin_sd))
-    sns.distplot(x3_final, rug=True, hist=False, label = '5.8 seconds, ' + str(len(x3_final)) + ' intervals, SD=' + str(x3_fin_sd))
+#%% Plot
 
-                 
+# Check this out https://python-graph-gallery.com/24-histogram-with-a-boxplot-on-top-seaborn/
+
+with sns.color_palette("RdBu_r", n_colors=3): # "Blues_r"
+    plt.title("Density distributions of all interval productions", fontsize=14)
+    plt.ylabel("Density", fontsize=14) 
+    plt.xlabel("Produced intervals (s)", fontsize=14)         
+    gl = sns.distplot(x1_final, rug=False, hist=False, color="steelblue", kde_kws={"shade": True}, 
+                 label = '1.45 seconds, ' + str(len(x1_final)) + ' intervals, SD=' + str(x1_fin_sd))
+    sns.distplot(x2_final, rug=False, hist=False, color="thistle", kde_kws={"shade": True},
+                 label = '2.9 seconds, ' + str(len(x2_final)) + ' intervals, SD=' + str(x2_fin_sd))
+    sns.distplot(x3_final, rug=False, hist=False, color="indianred", kde_kws={"shade": True},
+                 label = '5.8 seconds, ' + str(len(x3_final)) + ' intervals, SD=' + str(x3_fin_sd))
+    plt.yticks([], [])
+    plt.xticks([1.45, 2.9, 5.8])
+    plt.xlim(right=10)
+    plt.grid(b=None)
+    
+#    plt.tick_params(
+#        axis='y',          # changes apply to the x-axis
+#        which='both',      # both major and minor ticks are affected
+#        bottom=False,      # ticks along the bottom edge are off
+#        top=False,         # ticks along the top edge are off
+#        labelbottom=False) # labels along the bottom edge are off
+    
+x1_med = np.median(x1_final)
+x2_med = np.median(x2_final)
+x3_med = np.median(x3_final)
+
+lwm = 1.25
+lwt = 1.
+m_color = 'dimgrey'
+plt.axvline(x1_med, ymax=0.91, linestyle='-.', linewidth=lwm, color=m_color) #, 
+#            label = '1.45 sec median')
+#plt.text(1.7,0.2,'median',rotation=90)
+plt.axvline(1.45, ymax=0.95, linestyle='-', linewidth=lwt, color='navy')
+#
+plt.axvline(x2_med, ymax=0.63, linestyle='-.', linewidth=lwm, color=m_color) #, 
+#            label = '2.9 sec median')
+#plt.text(3.1,0.2,'median',rotation=90)
+plt.axvline(2.9, ymax=0.65, linestyle='-', linewidth=lwt, color='indigo')
+#
+plt.axvline(x3_med, ymax=0.285, linestyle='-.', linewidth=lwm, color=m_color, 
+            label = 'Medians')
+#plt.text(6.1,0.2,'median',rotation=90)
+plt.axvline(5.8, ymax=0.28, linestyle='-', linewidth=lwt, color='maroon')
+
+#plt.plot([], [], ' ', label="-.-. Medians")
+
+## Annotate with text + Arrow
+#plt.annotate('This point is interesting!', xy=(25, 50), xytext=(0, 80),
+#             arrowprops=dict(facecolor='black', shrink=0.05))
+sns.despine()
+plt.legend()
+plt.grid(b=None)
+
+
+
+# How to plot the mean and give the values of mean and std
+# https://stackoverflow.com/questions/44960170/plotting-mean-lines-for-different-hue-data-on-a-seaborn-facetgrid-plot
+#def vertical_mean_line(x, **kwargs):
+#    ls = {"0":"-","1":"--"}
+#    plt.axvline(x.mean(), linestyle =ls[kwargs.get("label","0")], 
+#                color = kwargs.get("color", "g"))
+#    txkw = dict(size=12, color = kwargs.get("color", "g"), rotation=90)
+#    tx = "mean: {:.2f}, std: {:.2f}".format(x.mean(),x.std())
+#    plt.text(x.mean()+1, 0.052, tx, **txkw)
+#    
+#gl.map(vertical_mean_line(x1_final, label="bla", color="steelblue")) 
+
+#%%       
 """
 
 # A function to truncate the number of decimal places
@@ -623,7 +686,7 @@ x2_final = [x for x in x2 if (x > x2_mean - 3*x2_sd)]
 x2_final = [x for x in x2_final if (x < x2_mean + 3*x2_sd)]
 # x3
 x3_final = [x for x in x3 if (x > x3_mean - 3*x3_sd)]
-x3_final = [x for x in x3_final if (x < x3_mean + 3*x3_sd)]
+x3_final = [x for x in x3_final if (x < x3_mean + 2*x3_sd)] # also changed this to 2
 
 # Calculate the SDs and Means of the data without the outliers
 x1_fin_arr = np.array(x1_final)
@@ -663,7 +726,7 @@ with sns.color_palette("GnBu_d"):
 
 
 
-
+#%%
 """
 ------- Sequential effects
 """
@@ -765,86 +828,6 @@ with sns.diverging_palette(145, 10, s=85, l=25, n=3):
 
 
 
-"""
----- Normalized distributions
-"""
-
-x1=[]
-x2=[]
-x3=[]
-pax = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10']
-for i in range(1,7): # 1, 2, 3, 4, 5, 6
-    for k in pax:
-#        data_path = 'C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/'
-        data_path = 'D:/ScaledTime/Matlab data/'
-        data_path_subj = os.path.join(data_path, 'ScaledTime'+k)
-        os.chdir(data_path_subj)
-        for j in ['1.45','2.9','5.8']:
-            name = 'ScaledTime_Play_subj_'+ k +'_bl_' + str(i) + '_int_' + j + '.txt'
-            if os.path.isfile(name) and os.path.exists(name):
-                int_length=np.genfromtxt(name, dtype='str')
-                for n in range(1,16):
-                    int_single = int_length[n,17]
-                    int_single = float(int_single)
-                    if j == '1.45':
-                        int_single = int_single/1.45
-                        x1.append(int_single)
-                    if j == '2.9':
-                        int_single = int_single/2.9
-                        x2.append(int_single)
-                    if j == '5.8':
-                        int_single = int_single/5.8
-                        x3.append(int_single)
-
-# A function to truncate the number of decimal places
-def truncate(n, decimals=0):
-    multiplier = 10 ** decimals
-    return int(n * multiplier) / multiplier     
-               
-# Calculate the means and the standard deviations 
-x1_arr = np.array(x1)
-x2_arr = np.array(x2)
-x3_arr = np.array(x3)
-#
-x1_mean = np.mean(x1_arr, axis=0)
-x2_mean = np.mean(x2_arr, axis=0)
-x3_mean = np.mean(x3_arr, axis=0)
-#
-x1_sd = truncate(np.std(x1_arr, axis=0), 3)
-x2_sd = truncate(np.std(x2_arr, axis=0), 3)
-x3_sd = truncate(np.std(x3_arr, axis=0), 3)
-
-# Keeps all values between mean +/- 3sd
-# x1
-x1_final = [x for x in x1 if (x > x1_mean - 3*x1_sd)]
-x1_final = [x for x in x1_final if (x < x1_mean + 3*x1_sd)]
-# x2
-x2_final = [x for x in x2 if (x > x2_mean - 3*x2_sd)]
-x2_final = [x for x in x2_final if (x < x2_mean + 3*x2_sd)]
-# x3
-x3_final = [x for x in x3 if (x > x3_mean - 3*x3_sd)]
-x3_final = [x for x in x3_final if (x < x3_mean + 3*x3_sd)]
-
-# Calculate the SDs and Means of the data without the outliers
-x1_fin_arr = np.array(x1_final)
-x2_fin_arr = np.array(x2_final)
-x3_fin_arr = np.array(x3_final)
-#
-x1_fin_mean = np.mean(x1_fin_arr, axis=0)
-x2_fin_mean = np.mean(x2_fin_arr, axis=0)
-x3_fin_mean = np.mean(x3_fin_arr, axis=0)
-#
-x1_fin_sd = truncate(np.std(x1_fin_arr, axis=0), 3)
-x2_fin_sd = truncate(np.std(x2_fin_arr, axis=0), 3)
-x3_fin_sd = truncate(np.std(x3_fin_arr, axis=0), 3)
-
-with sns.color_palette("Blues_r"):
-    plt.title("All interval productions of all subj of all blocks")
-    plt.ylabel("Density", fontsize=12) 
-    plt.xlabel("Normalized produced intervals", fontsize=12)         
-    sns.distplot(x1_final, hist=False, label='1.45 seconds, SD='+str(x1_fin_sd))
-    sns.distplot(x2_final, hist=False, label='2.9 seconds, SD='+str(x2_fin_sd))
-    sns.distplot(x3_final, hist=False, label='5.8 seconds, SD='+str(x3_fin_sd))
 
 
 
