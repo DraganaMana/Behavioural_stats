@@ -88,12 +88,13 @@ with sns.color_palette("Blues_r"):
 x1=[]
 x2=[]
 x3=[]
-pax = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 
-       '11', '12', '13', '14', '15', '16', '17', '18']
+#pax = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 
+#       '11', '12', '13', '14', '15', '16', '17', '18']
+pax = ['1','2','1369','7','8']
 for i in range(1,7): # 1, 2, 3, 4, 5, 6
     for k in pax:
-#        data_path = 'C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/'
-        data_path = 'D:/ScaledTime/Matlab data/'
+        data_path = 'C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/'
+#        data_path = 'D:/ScaledTime/Matlab data/'
         data_path_subj = os.path.join(data_path, 'ScaledTime'+k)
         os.chdir(data_path_subj)
         for j in ['1.45','2.9','5.8']:
@@ -101,7 +102,7 @@ for i in range(1,7): # 1, 2, 3, 4, 5, 6
             if os.path.isfile(name) and os.path.exists(name):
                 int_length=np.genfromtxt(name, dtype='str')
                 for n in range(1,16):
-                    int_single = int_length[n,17]
+                    int_single = int_length[n,15] # 17
                     int_single = float(int_single)
                     if j == '1.45':
                         x1.append(int_single)
@@ -185,20 +186,20 @@ x3_med = np.median(x3_final)
 lwm = 1.25
 lwt = 1.
 m_color = 'dimgrey'
-plt.axvline(x1_med, ymax=0.91, linestyle='-.', linewidth=lwm, color=m_color) #, 
+plt.axvline(x1_med, ymax=0.93, linestyle='-.', linewidth=lwm, color=m_color) # ymax=0.91
 #            label = '1.45 sec median')
 #plt.text(1.7,0.2,'median',rotation=90)
-plt.axvline(1.45, ymax=0.95, linestyle='-', linewidth=lwt, color='navy')
+plt.axvline(1.45, ymax=0.77, linestyle='-', linewidth=lwt, color='navy') # ymax=0.95
 #
-plt.axvline(x2_med, ymax=0.63, linestyle='-.', linewidth=lwm, color=m_color) #, 
+plt.axvline(x2_med, ymax=0.73, linestyle='-.', linewidth=lwm, color=m_color) # ymax=0.63 
 #            label = '2.9 sec median')
 #plt.text(3.1,0.2,'median',rotation=90)
-plt.axvline(2.9, ymax=0.65, linestyle='-', linewidth=lwt, color='indigo')
+plt.axvline(2.9, ymax=0.73, linestyle='-', linewidth=lwt, color='indigo') # ymax=0.65
 #
-plt.axvline(x3_med, ymax=0.285, linestyle='-.', linewidth=lwm, color=m_color, 
+plt.axvline(x3_med, ymax=0.44, linestyle='-.', linewidth=lwm, color=m_color, # ymax=0.285
             label = 'Medians')
 #plt.text(6.1,0.2,'median',rotation=90)
-plt.axvline(5.8, ymax=0.28, linestyle='-', linewidth=lwt, color='maroon')
+plt.axvline(5.8, ymax=0.44, linestyle='-', linewidth=lwt, color='maroon') # ymax=0.28
 
 #plt.plot([], [], ' ', label="-.-. Medians")
 
@@ -778,59 +779,288 @@ for i in range(1,7): # 1, 2, 3, 4, 5, 6
                     else:
                         pass
 
-# A function to truncate the number of decimal places
 def truncate(n, decimals=0):
     multiplier = 10 ** decimals
-    return int(n * multiplier) / multiplier
+    return int(n * multiplier) / multiplier    
 
-######################## 2.9
-x_s_sd = truncate(np.std(x_short),3)
-x_l_sd = truncate(np.std(x_long),3)
-x3_sd = truncate(np.std(x3),3)
+#%% Not fixed for these arrays etc 
+               
+## Calculate the means and the standard deviations 
+#x1_arr = np.array(x1)
+#x2_arr = np.array(x2)
+#x3_arr = np.array(x3)
+##
+#x1_mean = np.mean(x1_arr, axis=0)
+#x2_mean = np.mean(x2_arr, axis=0)
+#x3_mean = np.mean(x3_arr, axis=0)
+##
+#x1_sd = truncate(np.std(x1_arr, axis=0), 3)
+#x2_sd = truncate(np.std(x2_arr, axis=0), 3)
+#x3_sd = truncate(np.std(x3_arr, axis=0), 3)
+#
+## Keeps all values between mean +/- 3sd
+## x1
+#x1_final = [x for x in x1 if (x > x1_mean - 3*x1_sd)]
+#x1_final = [x for x in x1_final if (x < x1_mean + 3*x1_sd)]
+## x2
+#x2_final = [x for x in x2 if (x > x2_mean - 3*x2_sd)]
+#x2_final = [x for x in x2_final if (x < x2_mean + 3*x2_sd)]
+## x3
+#x3_final = [x for x in x3 if (x > x3_mean - 3*x3_sd)]
+#x3_final = [x for x in x3_final if (x < x3_mean + 3*x3_sd)] # changed this to 2, it was too long
+#
+## Calculate the SDs and Means of the data without the outliers
+#x1_fin_arr = np.array(x1_final)
+#x2_fin_arr = np.array(x2_final)
+#x3_fin_arr = np.array(x3_final)
+##
+#x1_fin_mean = np.mean(x1_fin_arr, axis=0)
+#x2_fin_mean = np.mean(x2_fin_arr, axis=0)
+#x3_fin_mean = np.mean(x3_fin_arr, axis=0)
+##
+#x1_fin_sd = truncate(np.std(x1_fin_arr, axis=0), 3)
+#x2_fin_sd = truncate(np.std(x2_fin_arr, axis=0), 3)
+#x3_fin_sd = truncate(np.std(x3_fin_arr, axis=0), 3)
+    #%%
 
-#with sns.color_palette("GnBu"):
-with sns.diverging_palette(145, 10, s=85, l=25, n=3):
-    plt.title(cur_int+" second interval productions across blocks")
-    plt.ylabel("Density", fontsize=12) 
-    plt.xlabel("Produced intervals", fontsize=12) 
-#    plt.xlim(0,30)
-    sns.distplot(x_short, rug=True, hist=False, color='green', label='Blocks 1, 4, 5 - after 1.45s, SD='+str(x_s_sd))
-    sns.distplot(x3, rug=True, hist=False, color='pink', label='Block 3 - after 2.9s, SD='+str(x3_sd))
-    sns.distplot(x_long, rug=True, hist=False, color='maroon', label='Blocks 2, 6 - after 5.8s, SD='+str(x_l_sd))
-
-
-######################## 1.45
-x_s_sd = truncate(np.std(x_short),3)
-x_l_sd = truncate(np.std(x_long),3)
-x1_sd = truncate(np.std(x1),3)
-
-with sns.diverging_palette(145, 10, s=85, l=25, n=3):
-    plt.title(cur_int+" second interval productions across blocks")
-    plt.ylabel("Density", fontsize=12) 
-    plt.xlabel("Produced intervals", fontsize=12) 
-    sns.distplot(x_short, rug=True, hist=False, color='green', label='Blocks 4, 6 - after 2.9s, SD='+str(x_s_sd))
-    sns.distplot(x3, rug=True, hist=False, color='pink', label='Block 1 - first interval, SD='+str(x1_sd))
-    sns.distplot(x_long, rug=True, hist=False, color='maroon', label='Blocks 2, 3, 5 - after 5.8s, SD='+str(x_l_sd))
+######################### 2.9
+#x_s_sd = truncate(np.std(x_short),3)
+#x_l_sd = truncate(np.std(x_long),3)
+#x3_sd = truncate(np.std(x3),3)
+#
+##with sns.color_palette("GnBu"):
+#with sns.diverging_palette(145, 10, s=85, l=25, n=3):
+#    plt.title(cur_int+" second interval productions across blocks")
+#    plt.ylabel("Density", fontsize=12) 
+#    plt.xlabel("Produced intervals", fontsize=12) 
+##    plt.xlim(0,30)
+#    sns.distplot(x_short, rug=True, hist=False, color='green', label='Blocks 1, 4, 5 - after 1.45s, SD='+str(x_s_sd))
+#    sns.distplot(x3, rug=True, hist=False, color='pink', label='Block 3 - after 2.9s, SD='+str(x3_sd))
+#    sns.distplot(x_long, rug=True, hist=False, color='maroon', label='Blocks 2, 6 - after 5.8s, SD='+str(x_l_sd))
+#
+#
+######################### 1.45
+#x_s_sd = truncate(np.std(x_short),3)
+#x_l_sd = truncate(np.std(x_long),3)
+#x1_sd = truncate(np.std(x1),3)
+#
+#with sns.diverging_palette(145, 10, s=85, l=25, n=3):
+#    plt.title(cur_int+" second interval productions across blocks")
+#    plt.ylabel("Density", fontsize=12) 
+#    plt.xlabel("Produced intervals", fontsize=12) 
+#    sns.distplot(x_short, rug=True, hist=False, color='green', label='Blocks 4, 6 - after 2.9s, SD='+str(x_s_sd))
+#    sns.distplot(x3, rug=True, hist=False, color='pink', label='Block 1 - first interval, SD='+str(x1_sd))
+#    sns.distplot(x_long, rug=True, hist=False, color='maroon', label='Blocks 2, 3, 5 - after 5.8s, SD='+str(x_l_sd))
 
 ######################## 5.8
 x_s_sd = truncate(np.std(x_short),3)
 x_l_sd = truncate(np.std(x_long),3)
 x5_sd = truncate(np.std(x5),3)
-
+#%%
 with sns.diverging_palette(145, 10, s=85, l=25, n=3):
     plt.title(cur_int+" second interval productions across blocks")
     plt.ylabel("Density", fontsize=12) 
     plt.xlabel("Produced intervals", fontsize=12) 
-    sns.distplot(x_short, rug=True, hist=False, color='green', label='Blocks 2, 4 - after 1.45s, SD='+str(x_s_sd))
-    sns.distplot(x3, rug=True, hist=False, color='pink', label='Block 5 - after 5.8s, SD='+str(x1_sd))
-    sns.distplot(x_long, rug=True, hist=False, color='maroon', label='Blocks 1, 3, 6 - after 2.9s, SD='+str(x_l_sd))
+    sns.distplot(x_short, rug=False, hist=False, color='indianred', kde_kws={"shade": True},
+                 label='Blocks 2, 4 - after 1.45s')
+    sns.distplot(x3, rug=False, hist=False, color='cornflowerblue', kde_kws={"shade": True},
+                 label='Block 5 - after 5.8s')
+    sns.distplot(x_long, rug=False, hist=False, color='green', kde_kws={"shade": True},
+                 label='Blocks 1, 3, 6 - after 2.9s')
+    plt.yticks([], [])
+    plt.xticks([5.8])
+    plt.xlim(right=10)
+sns.despine()
+plt.legend(loc='upper left')
+
+#%%
+#%%
+#%% CV-ER box plot
+
+x1=[]
+x2=[]
+x3=[]
 
 
+#pax = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 
+#       '11', '12', '13', '14', '15', '16', '17', '18']
+pax = ['1', '2', '7', '8', '1369']
+for k in pax:
+    for i in range(1,7): # 1, 2, 3, 4, 5, 6
+        data_path = 'C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/'
+#        data_path = 'D:/ScaledTime/Matlab data/'
+        data_path_subj = os.path.join(data_path, 'ScaledTime'+k)
+        os.chdir(data_path_subj)
+        for j in ['1.45','2.9','5.8']:
+            name = 'ScaledTime_Play_subj_'+ k +'_bl_' + str(i) + '_int_' + j + '.txt'
+            if os.path.isfile(name) and os.path.exists(name):
+                int_length=np.genfromtxt(name, dtype='str')
+                for n in range(1,16):
+                    int_single = int_length[n,15] # 17
+                    int_single = float(int_single)
+                    if j == '1.45':
+                        x1.append(int_single)
+                    if j == '2.9':
+                        x2.append(int_single)
+                    if j == '5.8':
+                        x3.append(int_single)
+                    
+# A function to truncate the number of decimal places
+def truncate(n, decimals=0):
+    multiplier = 10 ** decimals
+    return int(n * multiplier) / multiplier  
+
+# Calculate the means and the standard deviations 
+x1_arr = np.array(x1)
+x2_arr = np.array(x2)
+x3_arr = np.array(x3)
+#
+x1_all_mean = np.mean(x1_arr, axis=0)
+x2_all_mean = np.mean(x2_arr, axis=0)
+x3_all_mean = np.mean(x3_arr, axis=0)
+#
+x1_all_sd = truncate(np.std(x1_arr, axis=0), 3)
+x2_all_sd = truncate(np.std(x2_arr, axis=0), 3)
+x3_all_sd = truncate(np.std(x3_arr, axis=0), 3)
+
+#%%
+
+x1=[]
+x2=[]
+x3=[]
+
+cvs1 = []
+cvs2 = []
+cvs3 = []
+ers1 = []
+ers2 = []
+ers3 = []
+
+rows = []
+
+# subject 11 is 111 and 112
+#pax = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', 
+#       '11', '12', '13', '14', '15', '16', '17', '18']
+pax = ['1', '2', '7', '8', '1369']
+
+#df1 = pd.DataFrame({'cv1': [], 'er1': [], 'cv2': [], 'er2': [], 'cv3': [], 'er3': []})
 
 
+for k in pax:
+    for i in range(1,7): # 1, 2, 3, 4, 5, 6
+        data_path = 'C:/Users/Dragana/Documents/MATLAB/m_M1_internship/Multifracts/Data/'
+#        data_path = 'D:/ScaledTime/Matlab data/'
+        data_path_subj = os.path.join(data_path, 'ScaledTime'+k)
+        os.chdir(data_path_subj)
+        for j in ['1.45','2.9','5.8']:
+            name = 'ScaledTime_Play_subj_'+ k +'_bl_' + str(i) + '_int_' + j + '.txt'
+            if not os.path.exists(name):
+                continue
+            else:
+                int_length=np.genfromtxt(name, dtype='str')
+                for n in range(1,16):
+                    int_single = int_length[n,15] # 17
+                    int_single = float(int_single)
+                    if j == '1.45':
+                        x1.append(int_single)
+                    if j == '2.9':
+                        x2.append(int_single)
+                    if j == '5.8':
+                        x3.append(int_single)
+                        
+        # Keeps all values between mean +/- 3sd
+        # x1
+    x1_final = [x for x in x1 if (x > x1_all_mean - 3*x1_all_sd)]
+    x1_final = [x for x in x1_final if (x < x1_all_mean + 3*x1_all_sd)]
+    # x2
+    x2_final = [x for x in x2 if (x > x2_all_mean - 3*x2_all_sd)]
+    x2_final = [x for x in x2_final if (x < x2_all_mean + 3*x2_all_sd)]
+    # x3
+    x3_final = [x for x in x3 if (x > x3_all_mean - 3*x3_all_sd)]
+    x3_final = [x for x in x3_final if (x < x3_all_mean + 3*x3_all_sd)] # changed this to 2, it was too long
+
+    # Calculate the SDs and Means of the data per subject w/o the outliers
+
+    x1_mean = np.mean(x1_final)
+    x2_mean = np.mean(x2_final)
+    x3_mean = np.mean(x3_final)
+    
+    x1_sd = np.std(x1_final)
+    x2_sd = np.std(x2_final)
+    x3_sd = np.std(x3_final)
+    
+    x1_target = 1.45
+    x2_target = 2.9
+    x3_target = 5.8    
+
+    # Calculate the CVs  
+    cv1 = x1_sd / x1_mean
+    cv2 = x2_sd / x2_mean
+    cv3 = x3_sd / x3_mean
+    
+    cvs1.append(cv1)
+    cvs2.append(cv2)  
+    cvs3.append(cv3)
+    
+    # Calculate the ERs
+    er1 = x1_mean / x1_target
+    er2 = x2_mean / x2_target
+    er3 = x3_mean / x3_target
+    
+    ers1.append(er1)
+    ers2.append(er2)
+    ers3.append(er3)
 
 
+#%% Box plot
+import pandas as pd
+import seaborn as sns
+import itertools
+import matplotlib.style as style
+#%matplotlib qt
 
-##############################################################################
+#ERs = [ers1, ers2, ers3]
+#ERs_flat = list(itertools.chain.from_iterable(ERs)) # we have list of lists, and we need a flat list
+#CVs = [cvs1, cvs2, cvs3]
+#CVs_flat = list(itertools.chain.from_iterable(CVs))
+#ints = [1.45, 1.45, 1.45, 1.45, 1.45, 
+#        2.9,  2.9,  2.9,  2.9,  2.9, 
+#        5.8,  5.8,  5.8,  5.8,  5.8]
+
+CV_ER = [ers1, ers2, ers3, cvs1, cvs2, cvs3]
+CV_ER_flat = list(itertools.chain.from_iterable(CV_ER))
+
+ints = [1.45, 1.45, 1.45, 1.45, 1.45, 
+        2.9,  2.9,  2.9,  2.9,  2.9, 
+        5.8,  5.8,  5.8,  5.8,  5.8,
+        1.45, 1.45, 1.45, 1.45, 1.45, 
+        2.9,  2.9,  2.9,  2.9,  2.9, 
+        5.8,  5.8,  5.8,  5.8,  5.8]
+cver_divis = ['ER', 'ER', 'ER', 'ER', 'ER',
+              'ER', 'ER', 'ER', 'ER', 'ER',
+              'ER', 'ER', 'ER', 'ER', 'ER',
+              'CV', 'CV', 'CV', 'CV', 'CV',
+              'CV', 'CV', 'CV', 'CV', 'CV',
+              'CV', 'CV', 'CV', 'CV', 'CV']
+
+
+df1 = pd.DataFrame({'CV':CV_ER_flat, 'Ints': ints, 'Division': cver_divis})
+
+
+with sns.color_palette("GnBu_d"):
+    sns.set_style("whitegrid")
+#    style.use('seaborn-poster')
+    # Draw a pointplot to show pulse as a function of three categorical factors
+    spl = sns.catplot(x="Ints", y="CV_ER", hue = "Division", # alpha=1.5, # hue="kind", col="diet",
+                    # capsize=.2, #palette=sns.color_palette("Reds", 9), # height=6, aspect=.75,
+                    kind="point", data=df1)
+
+    intss = ['1.45', '2.9', '5.8']
+    plt.title("Average values of CV and ER per interval", fontsize=12)
+    plt.xlabel("Produced intervals", fontsize=12) 
+    plt.ylabel("Average values of CV and ER", fontsize=12) 
+    spl.set_xticklabels(intss, fontsize=12)
+    sns.despine()    
+    plt.show()
 
     
