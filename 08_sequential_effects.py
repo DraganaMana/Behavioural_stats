@@ -4,6 +4,9 @@ Created on Thu Apr 25 14:55:58 2019
 
 @author: Dragana
 """
+"""
+This code is also used only on the pilots data. 
+"""
 
 """
 Code plan:
