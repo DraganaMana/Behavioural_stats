@@ -4,6 +4,15 @@ Created on Fri Jun  7 12:23:49 2019
 
 @author: Dragana
 """
+
+"""
+Name explanation:
+CV --> Coefficient of Variation
+ER --> Error Rate 
+allInts --> All Intervals
+per Pax --> Per Participant
+"""
+
 import os
 import numpy as np
 import csv
