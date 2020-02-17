@@ -5,11 +5,11 @@ Created on Thu Jun 13 22:23:51 2019
 @author: Dragana
 """
 
-# -*- coding: utf-8 -*-
 """
-Created on Fri Jun  7 12:23:49 2019
-
-@author: Dragana
+Name explanation:
+CV --> Coefficient of Variation
+ER --> Error Rate 
+per Pax --> Per Participant
 """
 import os
 import numpy as np
