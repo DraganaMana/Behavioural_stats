@@ -4,6 +4,10 @@ Created on Thu Jun 13 14:10:37 2019
 
 @author: Dragana
 """
+
+"""
+I used this for plotting the data from the pilots. The final pax are just commented out. 
+"""
 import os
 import numpy as np
 import urllib.request
