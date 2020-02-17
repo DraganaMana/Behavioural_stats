@@ -4,6 +4,11 @@ Created on Mon May 20 18:01:59 2019
 
 @author: Dragana
 """
+"""
+This was used to check the timing accuracy of the Reply, and if it is the same as the Play condition. 
+It's not used to plot behavioural data. 
+"""
+
 import os
 import numpy as np
 import urllib.request
