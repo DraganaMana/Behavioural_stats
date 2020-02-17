@@ -5,6 +5,10 @@ Created on Mon Mar 25 23:00:21 2019
 @author: Dragana
 """
 
+"""
+The plots which are not commented out were used.
+"""
+
 import os
 import numpy as np
 import urllib.request
