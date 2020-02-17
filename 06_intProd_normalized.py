@@ -4,6 +4,10 @@ Created on Fri Jun 14 12:16:21 2019
 
 @author: Dragana
 """
+
+"""
+intProd --> interval production
+"""
 import os
 import numpy as np
 import urllib.request
